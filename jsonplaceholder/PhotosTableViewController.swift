@@ -32,13 +32,14 @@ class PhotosTableViewController: UITableViewController {
         myArray.removeAll()
         smallPhotosImagesArray.removeAll()
         //myArray = ["azaza", "ololo"]
-        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         let url = NSURL.init(string: "https://jsonplaceholder.typicode.com/photos")!
         if let data = NSData(contentsOfURL: url)
         {
             do {
-                let anyObj = try NSJSONSerialization.JSONObjectWithData(data, options: [])// as! [String: AnyObject]
+                let anyObj = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as! NSArray
                 //print(anyObj)
+                //let obj = (data as! [NSDictionary])[0]
                 print(anyObj[0])
                 print(anyObj[2])
                 var i = 0
@@ -63,7 +64,10 @@ class PhotosTableViewController: UITableViewController {
                 print("json error: \(error)")
             }
         }
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
+    
+   
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -88,13 +92,10 @@ class PhotosTableViewController: UITableViewController {
         let currentTitle = currentObject["title"] as! String
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! PhotosTableViewCell
         cell.label.text = currentTitle
-        /*let smallPhotoStr = currentObject["thumbnailUrl"] as! String
-        let smallPhotoUrl = NSURL.init(string: smallPhotoStr)!
-        if let imageData = NSData(contentsOfURL: smallPhotoUrl)
+        if smallPhotosImagesArray.count > indexPath.row
         {
-            cell.thumbnailPhoto.image = UIImage(data: imageData)!
-        }*/
-        cell.thumbnailPhoto.image = smallPhotosImagesArray[indexPath.row]
+            cell.thumbnailPhoto.image = smallPhotosImagesArray[indexPath.row]
+        }
         return cell
     }
     
