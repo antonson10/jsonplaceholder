@@ -31,10 +31,21 @@ class DetailViewController: UIViewController {
             let newString = "https://placeholdit.imgix.net/~text?txtsize=56&bg=" + backGround + "&txt=" + size + "&w=" + size + "&h=" + size
             let bigPhotoUrl = NSURL.init(string: newString)!
             /*https://placeholdit.imgix.net/~text?txtsize=56&bg=24f355&txt=600×600&w=600&h=600*/
-            if let imageData = NSData(contentsOfURL: bigPhotoUrl)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
+                let fetchedData = NSData(contentsOfURL: bigPhotoUrl)
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let imageData = fetchedData
+                    {
+                        self.bigImage.image = UIImage(data: imageData)
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    }
+                })
+            })
+            /*if let imageData = NSData(contentsOfURL: bigPhotoUrl)
             {
                 bigImage.image = UIImage(data: imageData)!
-            }
+            }*/
         }
     }
 
